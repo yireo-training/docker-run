@@ -1,0 +1,11 @@
+127.0.0.1 localhost localhost.localdomain localhost.localdomain.home
+
+172.20.0.1 magento2.yr # Yireo setup only
+
+172.20.0.100 php_local php.local 
+172.20.0.101 nginx_local nginx.local magento_local magento.local
+172.20.0.102 mysql_local mysql.local
+172.20.0.103 redis_local redis.local
+172.20.0.104 varnish_local varnish.local
+172.20.0.105 elasticsearch_local elasticsearch.local
+
