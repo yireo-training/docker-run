@@ -16,6 +16,7 @@ mkdir -p ${root}/mysql/lib
 mkdir -p ${root}/mysql/dumps
 
 # Run a new container
+#-v ${root}/mysql/lib:/var/lib/mysql \
 docker run \
     --name=mysql \
     --rm \
@@ -24,8 +25,9 @@ docker run \
     -e MYSQL_ROOT_PASSWORD=root \
     -e MYSQL_DATABASE=magento2 \
     -e MYSQL_SQL_TO_RUN='GRANT ALL ON *.* TO "root"@"%";' \
-    -v ${root}/mysql/lib:/var/lib/mysql \
+    --tmpfs /var/lib/mysql:rw \
     -v ${root}/mysql/dumps:/dumps \
+    -v ${root}/mysql/conf/custom.conf:/etc/mysql/conf.d/custom.conf \
     -v ${root}/mysql/scripts:/scripts \
     --cpus=4 \
     --net=magento \
@@ -34,3 +36,7 @@ docker run \
 
 sleep 1
 docker ps | grep -q mysql || echo "MySQL failed to start"
+
+sleep 1
+docker exec -it mysql /scripts/mysql-import.sh
+

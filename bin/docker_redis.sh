@@ -19,5 +19,5 @@ docker run \
     -d \
     --net=magento \
     --ip=172.20.0.103 \
-    redis:latest
+    torusware/speedus-redis
 

@@ -21,3 +21,8 @@ Next, start up the various containers using scripts in the `bin` folder. As a ba
 Once these images are up, the PHP image contains a `/scripts` folder with a sample script to install Magento 2. Probably, you want to modify this script, at least the backend user.
 
 You can also run all containers using `bin/docker_all_start.sh`.
+
+## Performance optimizations
+- MySQL ships with a couple configuration directives to make it faster;
+- MySQL adds its `/var/lib/mysql` folder to memory (tmpfs). Make sure to use the
+  dump-script if you want to persist your database;
