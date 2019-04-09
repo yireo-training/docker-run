@@ -9,12 +9,12 @@ root=`dirname $scriptFolder`
 docker network ls | grep -q " magento " || docker network create --driver bridge magento --subnet 172.20.0.0/16
 
 # Kill the existing container
-docker ps | grep -q varnish_local && docker stop varnish_local
+docker ps | grep -q varnish && docker stop varnish
 sleep 1
 
 # Run a new container
 docker run \
-    --name=varnish_local \
+    --name=varnish \
     --rm -d \
     -v ${root}/varnish/conf/varnish.vcl:/etc/varnish/default.vcl \
     -v ${root}/common/conf/hosts:/etc/hosts \
@@ -23,4 +23,4 @@ docker run \
     emgag/varnish:5
 
 sleep 1
-docker ps | grep -q varnish_local || echo "Varnish failed to start"
+docker ps | grep -q varnish || echo "Varnish failed to start"

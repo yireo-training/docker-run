@@ -14,14 +14,14 @@ image=yireo/magento2base
 docker network ls | grep -q " magento " || docker network create --driver bridge magento --subnet 172.20.0.0/16
 
 # Kill the existing container
-docker ps | grep -q php_local && docker stop php_local
+docker ps | grep -q php && docker stop php
 sleep 1
 
 mkdir -p ${root}/magento/source/pub
 
 # Run a new container
 docker run \
-    --name=php_local \
+    --name=php \
     --rm \
     -d \
     -p 9000:9000 \
@@ -32,5 +32,5 @@ docker run \
     $image
 
 sleep 1
-docker ps | grep -q php_local || echo "PHP-FPM failed to start"
+docker ps | grep -q php || echo "PHP-FPM failed to start"
 

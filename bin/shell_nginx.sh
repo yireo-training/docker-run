@@ -1,2 +1,2 @@
 #!/bin/bash
-docker exec -it nginx_local /bin/bash
+docker exec -it nginx /bin/bash

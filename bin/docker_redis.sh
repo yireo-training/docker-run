@@ -9,12 +9,12 @@ root=`dirname $scriptFolder`
 docker network ls | grep " magento " || docker network create --driver bridge magento --subnet 172.20.0.0/16
 
 # Kill the existing container
-docker ps | grep -q redis_local && docker stop redis_local
+docker ps | grep -q redis && docker stop redis
 sleep 1
 
 # Run a new container
 docker run \
-    --name=redis_local \
+    --name=redis \
     --rm \
     -d \
     --net=magento \

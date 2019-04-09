@@ -1,0 +1,44 @@
+version: "2"
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - 8080:80
+      - 8443:443
+    volumes:
+      - ./magento/source:/var/www/html
+      - ./nginx/conf/magento.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/conf/include.conf:/etc/nginx/include.d/magento-include.conf
+      - ./nginx/scripts:/scripts
+    links:
+      - php
+
+  php:
+    image: yireo/magento2base
+    ports:
+      - 9000
+    links:
+      - mysql
+      - redis
+    volumes:
+      - ./magento/source:/var/www/html
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "magento2"
+      MYSQL_SQL_TO_RUN: 'GRANT ALL ON *.* TO "root"@"%";'
+    ports:
+      - 3306
+    volumes:
+      - ./mysql/lib:/var/lib/mysql
+      - ./mysql/dumps:/dumps
+      - ./mysql/scripts:/scripts
+
+  redis:
+    image: redis
+    ports:
+      - 6379
+    restart: always
+

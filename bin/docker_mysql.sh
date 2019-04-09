@@ -9,7 +9,7 @@ root=`dirname $scriptFolder`
 docker network ls | grep " magento " || docker network create --driver bridge magento --subnet 172.20.0.0/16
 
 # Kill the existing container
-docker ps | grep -q mysql_local && docker stop mysql_local
+docker ps | grep -q mysql && docker stop mysql
 sleep 1
 
 mkdir -p ${root}/mysql/lib
@@ -17,7 +17,7 @@ mkdir -p ${root}/mysql/dumps
 
 # Run a new container
 docker run \
-    --name=mysql_local \
+    --name=mysql \
     --rm \
     -d \
     -p 3306 \
@@ -33,4 +33,4 @@ docker run \
     mysql:5.7
 
 sleep 1
-docker ps | grep -q mysql_local || echo "MySQL failed to start"
+docker ps | grep -q mysql || echo "MySQL failed to start"
