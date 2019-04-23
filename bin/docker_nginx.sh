@@ -22,6 +22,7 @@ docker run \
     -v ${root}/nginx/conf/include.conf:/etc/nginx/include.d/magento-include.conf \
     -v ${root}/nginx/scripts:/scripts \
     -v ${root}/common/conf/hosts:/etc/hosts \
+    --tmpfs /tmp:rw \
     --net=magento \
     --ip=172.20.0.101 \
     nginx

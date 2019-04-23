@@ -23,6 +23,7 @@ docker run \
     --cpus=1 \
     --net=magento \
     --ip=172.20.0.105 \
+    --tmpfs /tmp:rw \
     elasticsearch:5
 
 sleep 1

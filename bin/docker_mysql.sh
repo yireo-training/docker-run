@@ -26,6 +26,7 @@ docker run \
     -e MYSQL_DATABASE=magento2 \
     -e MYSQL_SQL_TO_RUN='GRANT ALL ON *.* TO "root"@"%";' \
     --tmpfs /var/lib/mysql:rw \
+    --tmpfs /tmp:rw \
     -v ${root}/mysql/dumps:/dumps \
     -v ${root}/mysql/conf/custom.conf:/etc/mysql/conf.d/custom.conf \
     -v ${root}/mysql/scripts:/scripts \
