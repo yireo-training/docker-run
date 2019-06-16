@@ -24,7 +24,7 @@ docker run \
     --net=magento \
     --ip=172.20.0.105 \
     --tmpfs /tmp:rw \
-    elasticsearch:5
+    elasticsearch:6.8.0
 
 sleep 1
 docker ps | grep -q elasticsearch || echo "ElasticSearch failed to start"

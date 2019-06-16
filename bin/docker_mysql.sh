@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Configuration
+#
+# Determine whether to run MySQL in a shared physical folder or tmpfs:
+# - tmpfs: Additional performance but without persistant state;
+# - Physical folder: Less performance but with persistant state;
+tmpfs=1
+
 # Define the root of this project
 script=`readlink -f $BASH_SOURCE`
 scriptFolder=`dirname $script`
@@ -15,8 +22,13 @@ sleep 1
 mkdir -p ${root}/mysql/lib
 mkdir -p ${root}/mysql/dumps
 
+if [ $tmpfs -eq 1 ] ; then
+    mysql_storage="--tmpfs /var/lib/mysql:rw"
+else
+    mysql_storage="-v ${root}/mysql/lib:/var/lib/mysql"
+fi
+
 # Run a new container
-#-v ${root}/mysql/lib:/var/lib/mysql \
 docker run \
     --name=mysql \
     --rm \
@@ -25,7 +37,7 @@ docker run \
     -e MYSQL_ROOT_PASSWORD=root \
     -e MYSQL_DATABASE=magento2 \
     -e MYSQL_SQL_TO_RUN='GRANT ALL ON *.* TO "root"@"%";' \
-    --tmpfs /var/lib/mysql:rw \
+    $mysql_storage \
     --tmpfs /tmp:rw \
     -v ${root}/mysql/dumps:/dumps \
     -v ${root}/mysql/conf/custom.conf:/etc/mysql/conf.d/custom.conf \
@@ -39,5 +51,5 @@ sleep 1
 docker ps | grep -q mysql || echo "MySQL failed to start"
 
 sleep 1
-docker exec -it mysql /scripts/mysql-import.sh
+docker exec -it mysql bash -c "test -f /scripts/mysql-import.sh && /scripts/mysql-import.sh"
 

@@ -6,7 +6,7 @@ import std;
 # For SSL offloading, pass the following header in your proxy server or load balancer: 'X-Forwarded-Proto: https'
 
 backend default {
-    .host = "magento";
+    .host = "magento2.yr";
     .port = "80";
     .first_byte_timeout = 1200s;
     .probe = {
