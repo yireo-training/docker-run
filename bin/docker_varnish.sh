@@ -15,7 +15,7 @@ sleep 1
 # Run a new container
 docker run \
     --name=varnish \
-    --rm -d \
+    --rm -it -d \
     -v ${root}/varnish/conf/varnish.vcl:/etc/varnish/default.vcl \
     -v ${root}/common/conf/hosts:/etc/hosts \
     --net=magento \

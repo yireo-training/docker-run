@@ -18,8 +18,7 @@ sleep 1
 # Run a new container
 docker run \
     --name=php \
-    --rm \
-    -d \
+    --rm -it -d \
     -p 9000:9000 \
     --mount type=bind,source=${root}/magento/source,target=/var/www/html \
     --tmpfs /tmp:rw \

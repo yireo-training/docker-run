@@ -15,8 +15,7 @@ sleep 1
 # Run a new container
 docker run \
     --name=redis \
-    --rm \
-    -d \
+    --rm -it -d \
     --net=magento \
     --ip=172.20.0.103 \
     torusware/speedus-redis

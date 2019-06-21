@@ -15,7 +15,7 @@ sleep 1
 # Run a new container
 docker run \
     --name=nginx \
-    --rm -d -it \
+    --rm -it -d \
     --cpus=1 \
     -v ${root}/magento/source:/var/www/html \
     -v ${root}/nginx/conf/magento.conf:/etc/nginx/conf.d/default.conf \

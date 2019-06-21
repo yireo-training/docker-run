@@ -31,8 +31,7 @@ fi
 # Run a new container
 docker run \
     --name=mysql \
-    --rm \
-    -d \
+    --rm -it -d \
     -p 3306 \
     -e MYSQL_ROOT_PASSWORD=root \
     -e MYSQL_DATABASE=magento2 \
@@ -40,7 +39,7 @@ docker run \
     $mysql_storage \
     --tmpfs /tmp:rw \
     -v ${root}/mysql/dumps:/dumps \
-    -v ${root}/mysql/conf/custom.conf:/etc/mysql/conf.d/custom.conf \
+    -v ${root}/mysql/conf/custom.conf:/etc/mysql/conf.d/custom.cnf \
     -v ${root}/mysql/scripts:/scripts \
     --cpus=4 \
     --net=magento \
