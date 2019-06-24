@@ -9,12 +9,12 @@ root=`dirname $scriptFolder`
 docker network ls | grep -q " magento " || docker network create --driver bridge magento --subnet 172.20.0.0/16
 
 # Kill the existing container
-docker ps | grep -q elasticsearch && docker stop elasticsearch
+docker ps | grep -q elasticsearch-yr && docker stop elasticsearch-yr
 sleep 1
 
 # Run a new container
 docker run \
-    --name=elasticsearch \
+    --name=elasticsearch-yr \
     --rm -it -d \
     -p 9200:9200 \
     -p 9300:9300 \
@@ -26,5 +26,5 @@ docker run \
     elasticsearch:6.8.0
 
 sleep 1
-docker ps | grep -q elasticsearch || echo "ElasticSearch failed to start"
+docker ps | grep -q elasticsearch-yr || echo "ElasticSearch failed to start"
 

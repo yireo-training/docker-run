@@ -1,7 +1,13 @@
 127.0.0.1 localhost localhost.localdomain localhost.localdomain.home
 
-172.20.0.1 magento2.yr # Yireo setup only
+# Yireo setup only
+172.20.0.1 magento2.yr
+172.20.0.1 m2.betelgeuse m2.betelgeuse.yr
+172.20.0.1 m2.sirius m2.sirius.yr
+172.20.0.1 m2.rigel m2.rigel.yr
+172.20.0.1 m2.vega m2.vega.yr
 
+# Services
 172.20.0.100 php php.local 
 172.20.0.101 nginx nginx.local magento magento.local
 172.20.0.102 mysql mysql.local
