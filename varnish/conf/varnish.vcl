@@ -1,14 +1,14 @@
-# VCL version 5.0 is not supported so it should be 4.0 even though actually used Varnish version is 5
+# VCL version 5.0 is not supported so it should be 4.0 even though actually used Varnish version is 6
 vcl 4.0;
 
 import std;
-# The minimal Varnish version is 5.0
+# The minimal Varnish version is 6.0
 # For SSL offloading, pass the following header in your proxy server or load balancer: 'X-Forwarded-Proto: https'
 
 backend default {
-    .host = "magento2.yr";
+    .host = "m2.sirius.yr";
     .port = "80";
-    .first_byte_timeout = 1200s;
+    .first_byte_timeout = 600s;
     .probe = {
         .url = "/health_check.php";
         .timeout = 2s;
@@ -24,6 +24,7 @@ acl purge {
     "172.20.0.101";
     "172.20.0.104";
     "127.0.0.1";
+    "localhost";
 }
 
 sub vcl_recv {
@@ -68,7 +69,7 @@ sub vcl_recv {
     }
 
     # Bypass health check requests
-    if (req.url ~ "/health_check.php") {
+    if (req.url ~ "/pub/health_check.php") {
         return (pass);
     }
 
@@ -91,18 +92,19 @@ sub vcl_recv {
         } elsif (req.http.Accept-Encoding ~ "deflate" && req.http.user-agent !~ "MSIE") {
             set req.http.Accept-Encoding = "deflate";
         } else {
-            # unkown algorithm
+            # unknown algorithm
             unset req.http.Accept-Encoding;
         }
     }
 
-    # Remove Google gclid parameters to minimize the cache objects
-    set req.url = regsuball(req.url,"\?gclid=[^&]+$",""); # strips when QS = "?gclid=AAA"
-    set req.url = regsuball(req.url,"\?gclid=[^&]+&","?"); # strips when QS = "?gclid=AAA&foo=bar"
-    set req.url = regsuball(req.url,"&gclid=[^&]+",""); # strips when QS = "?foo=bar&gclid=AAA" or QS = "?foo=bar&gclid=AAA&bar=baz"
+    # Remove all marketing get parameters to minimize the cache objects
+    if (req.url ~ "(\?|&)(gclid|cx|ie|cof|siteurl|zanpid|origin|fbclid|mc_[a-z]+|utm_[a-z]+|_bta_[a-z]+)=") {
+        set req.url = regsuball(req.url, "(gclid|cx|ie|cof|siteurl|zanpid|origin|fbclid|mc_[a-z]+|utm_[a-z]+|_bta_[a-z]+)=[-_A-z0-9+()%.]+&?", "");
+        set req.url = regsub(req.url, "[?|&]+$", "");
+    }
 
     # Static files caching
-    if (req.url ~ "^/(media|static)/") {
+    if (req.url ~ "^/(pub/)?(media|static)/") {
         # Static files should not be cached by default
         return (pass);
 
@@ -132,6 +134,19 @@ sub vcl_hash {
         hash_data(req.http.X-Forwarded-Proto);
     }
     
+
+    if (req.url ~ "/graphql") {
+        call process_graphql_headers;
+    }
+}
+
+sub process_graphql_headers {
+    if (req.http.Store) {
+        hash_data(req.http.Store);
+    }
+    if (req.http.Content-Currency) {
+        hash_data(req.http.Content-Currency);
+    }
 }
 
 sub vcl_backend_response {
@@ -193,7 +208,7 @@ sub vcl_deliver {
     }
 
     # Not letting browser to cache non-static files.
-    if (resp.http.Cache-Control !~ "private" && req.url !~ "^/(media|static)/") {
+    if (resp.http.Cache-Control !~ "private" && req.url !~ "^/(pub/)?(media|static)/") {
         set resp.http.Pragma = "no-cache";
         set resp.http.Expires = "-1";
         set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
@@ -220,7 +235,7 @@ sub vcl_hit {
             return (deliver);
         } else {
             # Hit after TTL and grace expiration
-            return (miss);
+            return (restart);
         }
     } else {
         # server is not healthy, retrieve from cache
