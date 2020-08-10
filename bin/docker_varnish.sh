@@ -32,7 +32,7 @@ docker run \
     -v ${root}/common/conf/hosts:/etc/hosts \
     --net=magento \
     --ip=172.20.0.104 \
-    emgag/varnish:5
+    varnish:6
 
 sleep 2
 docker ps | grep -q varnish-yr || echo "Varnish failed to start"
