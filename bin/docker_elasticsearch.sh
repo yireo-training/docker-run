@@ -21,6 +21,7 @@ docker run \
     -e "discovery.type=single-node" \
     -e "ES_JAVA_OPTS=-Xms128m -Xmx128m" \
     --cpus=1 \
+    --memory=512m \
     --net=magento \
     --ip=172.20.0.105 \
     --tmpfs /tmp:rw \
